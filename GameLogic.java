@@ -11,7 +11,7 @@ public class GameLogic {
             if (isDigit) {
                 value = Character.getNumericValue(ch);
             } else if (ch == 'A') {
-                value = 1;
+                value = 11;
             } else {
                 value = 10;
             }
@@ -34,14 +34,39 @@ public class GameLogic {
         return handTotal;
     }
 
-    public boolean checkBust() {
+    public int trueHandValue() {
+        int value;
         if (handValue() > 21) {
-            return true;
+            if (checkAce() > 0) {
+                value = handValue() - (checkAce() * 10);
+                if (value <= 11) {
+                    value += 10;
+                }
+                return value;
+            }
         }
+        return handValue();
+    }
 
-        else {
+    public int checkAce() {
+        int aceCount = 0;
+        for (int i = 0; i < hand.length; i++) {
+            if (hand[i].length() == 2) {
+                if (hand[i].charAt(0) == 'A') {
+                    aceCount += 1;
+                }
+            }
+        }
+        return aceCount;
+    }
+
+    public boolean checkBust() {
+        if (trueHandValue() > 21) {
+            return true;
+        } else {
             return false;
         }
+
     }
 
     public String displayHand() {
@@ -63,5 +88,34 @@ public class GameLogic {
         Deck.incrementCardsPlayed();
         cardsReceived += 1;
         Player.setCardsReceived(cardsReceived);
+    }
+
+    public static void checkWinner(Player player, Dealer dealer) {
+        if ((!dealer.checkBust()) && (dealer.getCardsReceived() != 5)) {
+            System.out.println(" ");
+            System.out.println("The value of the Dealer's hand is: " + dealer.trueHandValue());
+            System.out.println("The value of your hand is: " + player.trueHandValue());
+            if (dealer.trueHandValue() >= player.trueHandValue()) {
+                System.out.println("The house always wins...");
+                System.out.println("Better luck next time!");
+            } else if (player.trueHandValue() > dealer.trueHandValue()) {
+                System.out.println(player.getName() + " wins!!!");
+            }
+        } else {
+            System.out.println("You win!");
+        }
+    }
+
+    public static void startGame(Player player, Dealer dealer) {
+        Deck.shuffleDeck();
+
+        dealer.deal();
+        player.deal();
+        dealer.deal();
+        player.deal();
+
+        System.out.println("Here is your" + player.displayHand());
+
+        System.out.println("The value of your hand is: " + player.trueHandValue());
     }
 }
