@@ -1,3 +1,5 @@
+import javax.swing.JPanel;
+
 public class Player extends GameLogic {
 
     private String name;
@@ -25,4 +27,24 @@ public class Player extends GameLogic {
         cardsReceived = input;
     }
 
+    public JPanel hit() {
+
+        deal();
+        JPanel output = displayCard("4H");
+
+        if (checkBust()) {
+            // Bust return
+
+        } else if (!checkBust()) {
+            if (getCardsReceived() == 5) {
+                // 5 card trick return
+
+            }
+            if (trueHandValue() == 21) {
+                // blackjack return
+
+            }
+        }
+        return output;
+    }
 }

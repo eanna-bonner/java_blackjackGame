@@ -1,7 +1,34 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
 public class GameLogic {
 
     String[] hand = { "", "", "", "", "" };
     int cardsReceived;
+
+    private String cardSuit(String card) {
+        String suit;
+        char ch = card.charAt(card.length() - 1);
+
+        if (ch == 'S') {
+            suit = "spades";
+        } else if (ch == 'D') {
+            suit = "diamonds";
+        } else if (ch == 'C') {
+            suit = "clubs";
+        } else if (ch == 'H') {
+            suit = "hearts";
+        } else {
+            System.err.println("Error in cardSuit. Suit not found.");
+            suit = "error";
+        }
+
+        return suit;
+    }
 
     private int cardValue(String card) {
         int value = 0;
@@ -81,6 +108,33 @@ public class GameLogic {
 
         }
         return output;
+    }
+
+    public JPanel displayCard(String card) {
+        String stringValue;
+        int intValue = cardValue(card);
+        if (intValue == 11) {
+            stringValue = "ace";
+        } else {
+            stringValue = Integer.toString(intValue);
+        }
+        String suit = cardSuit(card);
+        JPanel cardPanel = new JPanel();
+        cardPanel.setBounds(100 + (42 * cardsReceived), 110, 32, 56);
+        cardPanel.setBackground(new java.awt.Color(0, 0, 0));// 53,101,77 is poker green
+        BufferedImage myPicture;
+        try {
+            myPicture = ImageIO
+                    .read(new File(
+                            "Assets\\Cards\\" + stringValue + "_" + suit + ".png"));
+        } catch (IOException e1) {
+            myPicture = null;
+            e1.printStackTrace();
+        }
+        JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+
+        cardPanel.add(picLabel);
+        return cardPanel;
     }
 
     public void deal() {
